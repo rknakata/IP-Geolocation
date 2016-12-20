@@ -1,12 +1,12 @@
 require 'json'
 require 'open-uri'
 
-ip = ARGV.first
+@ip = ARGV.first
 @city = nil
 
-def get_city(ip)
-  if ip != nil
-    @city = (open("http://ipinfo.io/#{ip}/city").read)
+def get_city()
+  if @ip != nil
+    @city = (open("http://ipinfo.io/#{@ip}/city").read)
     #puts "#{city}"
     return @city
   else
@@ -34,13 +34,19 @@ end
 
 print "Doing something tricky..."
 show_wait_spinner{
-  #sleep rand(4)+2 # Simulate a task taking an unknown amount of time
-  get_city(ip)
+  get_city()
 }
 puts "Done!"
 puts @city
 # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
 
-intro = """"""
+puts """
 
-puts intro
+  .-..---.        .--.             .-.                     .-.  _
+  : :: .; :      : .--'            : :                    .' `.:_;
+  : ::  _.'_____ : : _  .--.  .--. : :   .--.  .--.  .--. `. .'.-. .--. ,-.,-.
+  : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
+  :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
+
+                                                                              
+"""
