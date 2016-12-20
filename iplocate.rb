@@ -3,10 +3,11 @@ require 'open-uri'
 
 @ip = ARGV.first
 @city = nil
+@input = nil
 
 def get_city()
   if @ip != nil
-    @city = (open("http://ipinfo.io/#{@ip}/city").read)
+    @city = open("http://ipinfo.io/#{@ip}/city").read.chomp
     #puts "#{city}"
     return @city
   else
@@ -32,12 +33,12 @@ def show_wait_spinner(fps=10)
   }                # Use the block's return value as the method's
 end
 
-print "Doing something tricky..."
+print "Locating..."
 show_wait_spinner{
   get_city()
 }
 puts "Done!"
-puts @city
+puts "IP:\"#{@ip}\" City:\"#{@city}\""
 # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
 
 def display_name()
@@ -49,8 +50,18 @@ def display_name()
   : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
   :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
 
+  For options type: options
+  or
+  CTRL-C to exit
 
   """
+  while @input == nil do
+      @input = $stdin.gets.chomp
+      if @input == "" || "options"
+        puts "ごめん I don't understand \"#{@input}\"\nPlease enter a valid command or press CTRL-C to exit."
+        @input = nil
+      end
+  end
 end
 
 display_name()
