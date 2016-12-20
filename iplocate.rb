@@ -65,3 +65,9 @@ def display_name()
 end
 
 display_name()
+
+=begin
+check if argument 1 is ip or .txt file
+if ip get json and update all class variables
+if txt open txt in append mode ask user for userinput
+=end
