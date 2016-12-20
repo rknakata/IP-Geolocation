@@ -40,7 +40,8 @@ puts "Done!"
 puts @city
 # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
 
-puts """
+def display_name()
+  puts """
 
   .-..---.        .--.             .-.                     .-.  _
   : :: .; :      : .--'            : :                    .' `.:_;
@@ -48,5 +49,8 @@ puts """
   : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
   :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
 
-                                                                              
-"""
+
+  """
+end
+
+display_name()
