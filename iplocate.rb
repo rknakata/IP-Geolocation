@@ -114,7 +114,7 @@ def run()
   end
 end
 
-def show_wait_spinner(fps=10)
+def show_wait_spinner(fps=10) # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
   chars = %w[| / - \\]
   delay = 1.0/fps
   iter = 0
@@ -130,6 +130,7 @@ def show_wait_spinner(fps=10)
     spinner.join   # …and wait for it to do so.
   }                # Use the block's return value as the method's
 end
+
 
 # program starts here
 show_name()
