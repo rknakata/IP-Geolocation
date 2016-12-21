@@ -27,6 +27,7 @@ def show_name()
   : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
   :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
 
+  𝓢𝓪𝓫𝓾𝓻𝓸
 
   For options type: options
   or
@@ -54,10 +55,25 @@ def get_info()
     @country = open("http://ipinfo.io/#{@command_argument}/country").read.chomp
     @phone = open("http://ipinfo.io/#{@command_argument}/phone").read.chomp
   elsif @command_type == "txt" # not checked
+    puts "I made it"
     txt_file = open(@command_argument, 'r+')
+    # take off .txt from the name
+    @command_argument_as_array = @command_argument.split("")
+    *prefix, four,three, two, one = @command_argument_as_array
+    @short_file_name = prefix.join("")
+
+    new_txt_file = open("#{@short_file_name}(with city).txt", 'w') # make a new txt file using the oldname plus (withcity)
+
+    @line_number = 1
     txt_file.each do |line|
-      line_ip_city = open("http://ipinfo.io/#{@command_argument}/city").read.chomp
-      line + " City:" + line_ip_city # append the city to each ip
+      @line_ip_city = open("http://ipinfo.io/#{line.chomp}/city").read.chomp
+      new_txt_file.write("#{line.chomp} City: #{@line_ip_city}\n")
+      puts "Working on line #{@line_number}: #{"#{line.chomp} City: #{@line_ip_city}\n"}"
+      @line_number = @line_number + 1
+    end
+    @line_number = 1
+    new_txt_file.close()
+    txt_file.close()
   end
 end
 
@@ -91,10 +107,10 @@ def run()
         @user_input = nil
       elsif @user_input == "display"
         show_instance_values()
+        @user_input = nil
       else
         puts "ごめん I don't understand \"#{@user_input}\"\nPlease enter a valid command or press CTRL-C to exit."
       end
-  end
   end
 end
 
