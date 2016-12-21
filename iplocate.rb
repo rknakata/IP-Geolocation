@@ -1,18 +1,97 @@
+#!/usr/bin/env ruby
+# used for integrating into command line
+# https://commandercoriander.net/blog/2013/02/16/making-a-ruby-script-executable/
+
 require 'json'
 require 'open-uri'
 
-@ip = ARGV.first
+@command_argument = ARGV.first
+@command_type = nil
+@user_input = nil
+@ip = nil
+@hostname = nil
+@loc = nil
+@org = nil
 @city = nil
-@input = nil
+@region = nil
+@country = nil
+@phone = nil
+@undefined = "undefined"
 
-def get_city()
-  if @ip != nil
-    @city = open("http://ipinfo.io/#{@ip}/city").read.chomp
-    #puts "#{city}"
-    return @city
+
+def check_format()
+  if @command_argument.include?(".txt")
+    @command_type = "txt"
   else
-    puts "no ip given"
-    return nil
+    @command_type = "IP"
+  end
+end
+
+def get_info()
+  if @command_type == "IP"
+    # replace with parse json
+    @ip = open("http://ipinfo.io/#{@command_argument}/ip").read.chomp # use to double check against command_argument
+    @hostname = open("http://ipinfo.io/#{@command_argument}/hostname").read.chomp
+    @loc = open("http://ipinfo.io/#{@command_argument}/loc").read.chomp
+    @org = open("http://ipinfo.io/#{@command_argument}/org").read.chomp
+    @city = open("http://ipinfo.io/#{@command_argument}/city").read.chomp
+    @region = open("http://ipinfo.io/#{@command_argument}/region").read.chomp
+    @country = open("http://ipinfo.io/#{@command_argument}/country").read.chomp
+    @phone = open("http://ipinfo.io/#{@command_argument}/phone").read.chomp
+  elsif @command_type == "txt" # not checked
+    txt_file = open(@command_argument, 'r+')
+    txt_file.each do |line|
+      line_ip_city = open("http://ipinfo.io/#{@command_argument}/city").read.chomp
+      line + " City:" + line_ip_city # append the city to each ip
+  end
+end
+
+def show_instance_values()
+  puts "Collected Info"
+  puts ">>"
+  puts "command argument: #{@command_argument}"
+  puts "command type: #{@command_type}"
+  puts "user input: #{@user_input}"
+  puts "ip: #{@ip}"
+  puts "hostname: #{@hostname}"
+  puts "location: #{@loc}"
+  puts "organization: #{@org}"
+  puts "city: #{@city}"
+  puts "region: #{@region}"
+  puts "country: #{@country}"
+  puts "phone: #{@phone}"
+  # puts "undefined: #{@undefined}"
+  puts "<<"
+end
+
+def display_name()
+  puts """
+
+  .-..---.        .--.             .-.                     .-.  _
+  : :: .; :      : .--'            : :                    .' `.:_;
+  : ::  _.'_____ : : _  .--.  .--. : :   .--.  .--.  .--. `. .'.-. .--. ,-.,-.
+  : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
+  :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
+
+  For options type: options
+  or
+  CTRL-C to exit
+  """
+  while @user_input == nil do
+      @user_input = $stdin.gets.chomp
+      # use switch case instead of if statements
+      if @user_input == "" || @user_input == "nil"
+        puts "Please enter a valid command or press CTRL-C to exit."
+        @user_input = nil
+      elsif @user_input == "options"
+        puts "commands go here"
+        @user_input = nil
+      elsif @user_input == "display"
+        show_instance_values()
+      else
+        puts "ごめん I don't understand \"#{@user_input}\"\nPlease enter a valid command or press CTRL-C to exit."
+      end
+  end
   end
 end
 
@@ -33,41 +112,14 @@ def show_wait_spinner(fps=10)
   }                # Use the block's return value as the method's
 end
 
+# program starts here
 print "Locating..."
 show_wait_spinner{
-  get_city()
+  check_format()
+  get_info()
 }
 puts "Done!"
 puts "IP:\"#{@ip}\" City:\"#{@city}\""
 # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
 
-def display_name()
-  puts """
-
-  .-..---.        .--.             .-.                     .-.  _
-  : :: .; :      : .--'            : :                    .' `.:_;
-  : ::  _.'_____ : : _  .--.  .--. : :   .--.  .--.  .--. `. .'.-. .--. ,-.,-.
-  : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
-  :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
-
-  For options type: options
-  or
-  CTRL-C to exit
-
-  """
-  while @input == nil do
-      @input = $stdin.gets.chomp
-      if @input == "" || "options"
-        puts "ごめん I don't understand \"#{@input}\"\nPlease enter a valid command or press CTRL-C to exit."
-        @input = nil
-      end
-  end
-end
-
 display_name()
-
-=begin
-check if argument 1 is ip or .txt file
-if ip get json and update all class variables
-if txt open txt in append mode ask user for userinput
-=end
