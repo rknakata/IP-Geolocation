@@ -18,6 +18,21 @@ require 'open-uri'
 @phone = nil
 @undefined = "undefined"
 
+def show_name()
+  puts """
+
+  .-..---.        .--.             .-.                     .-.  _
+  : :: .; :      : .--'            : :                    .' `.:_;
+  : ::  _.'_____ : : _  .--.  .--. : :   .--.  .--.  .--. `. .'.-. .--. ,-.,-.
+  : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
+  :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
+
+
+  For options type: options
+  or
+  CTRL-C to exit
+  """
+end
 
 def check_format()
   if @command_argument.include?(".txt")
@@ -64,19 +79,7 @@ def show_instance_values()
   puts "<<"
 end
 
-def display_name()
-  puts """
-
-  .-..---.        .--.             .-.                     .-.  _
-  : :: .; :      : .--'            : :                    .' `.:_;
-  : ::  _.'_____ : : _  .--.  .--. : :   .--.  .--.  .--. `. .'.-. .--. ,-.,-.
-  : :: :  :_____:: :; :' '_.'' .; :: :_ ' .; :'  ..'' .; ; : : : :' .; :: ,. :
-  :_;:_;         `.__.'`.__.'`.__.'`.__;`.__.'`.__.'`.__,_;:_; :_;`.__.':_;:_;
-
-  For options type: options
-  or
-  CTRL-C to exit
-  """
+def run()
   while @user_input == nil do
       @user_input = $stdin.gets.chomp
       # use switch case instead of if statements
@@ -113,6 +116,7 @@ def show_wait_spinner(fps=10)
 end
 
 # program starts here
+show_name()
 print "Locating..."
 show_wait_spinner{
   check_format()
@@ -122,4 +126,4 @@ puts "Done!"
 puts "IP:\"#{@ip}\" City:\"#{@city}\""
 # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
 
-display_name()
+run()
