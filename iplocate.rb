@@ -40,6 +40,9 @@ def check_format()
     @command_type = "txt"
   else
     @command_type = "IP"
+    # if @command_type == "IP"
+      print "Locating..."
+    # end
   end
 end
 
@@ -54,8 +57,8 @@ def get_info()
     @region = open("http://ipinfo.io/#{@command_argument}/region").read.chomp
     @country = open("http://ipinfo.io/#{@command_argument}/country").read.chomp
     @phone = open("http://ipinfo.io/#{@command_argument}/phone").read.chomp
-  elsif @command_type == "txt" # not checked
-    puts "I made it"
+=begin
+  elsif @command_type == "txt"
     txt_file = open(@command_argument, 'r+')
     # take off .txt from the name
     @command_argument_as_array = @command_argument.split("")
@@ -68,13 +71,41 @@ def get_info()
     txt_file.each do |line|
       @line_ip_city = open("http://ipinfo.io/#{line.chomp}/city").read.chomp
       new_txt_file.write("#{line.chomp} City: #{@line_ip_city}\n")
+      # check this later
       puts "Working on line #{@line_number}: #{"#{line.chomp} City: #{@line_ip_city}\n"}"
+
       @line_number = @line_number + 1
     end
     @line_number = 1
     new_txt_file.close()
     txt_file.close()
   end
+=end
+end
+
+def do_txt()
+  @command_type == "txt"
+  txt_file = open(@command_argument, 'r+')
+  # take off .txt from the name
+  @command_argument_as_array = @command_argument.split("")
+  *prefix, four,three, two, one = @command_argument_as_array
+  @short_file_name = prefix.join("")
+
+  new_txt_file = open("#{@short_file_name}(with city).txt", 'w') # make a new txt file using the oldname plus (withcity)
+
+  @line_number = 1
+  txt_file.each do |line|
+    @line_ip_city = open("http://ipinfo.io/#{line.chomp}/city").read.chomp
+    new_txt_file.write("#{line.chomp} City: #{@line_ip_city}\n")
+    # check this later
+    puts "Working on line #{@line_number}: #{"#{line.chomp} City: #{@line_ip_city}\n"}"
+
+    @line_number = @line_number + 1
+  end
+  @line_number = 1
+  new_txt_file.close()
+  txt_file.close()
+end
 end
 
 def show_instance_values()
@@ -120,9 +151,20 @@ def show_wait_spinner(fps=10) # http://stackoverflow.com/questions/10262235/prin
   iter = 0
   spinner = Thread.new do
     while iter do  # Keep spinning until told otherwise
-      print chars[(iter+=1) % chars.length]
-      sleep delay
-      print "\b"
+      if @command_type == "IP"
+        print chars[(iter+=1) % chars.length]
+        sleep delay
+        print "\b"
+      elsif @command_type == "txt"
+=begin
+        puts @line_number
+        print chars[(iter+=1) % chars.length]
+        @status_text_length = "Working on line #{@line_number}"
+        print @status_text_length
+        sleep delay
+        print "\b" * @status_text_length.length + 1
+=end
+      end
     end
   end
   yield.tap{       # After yielding to the block, save the return value
@@ -134,13 +176,19 @@ end
 
 # program starts here
 show_name()
-print "Locating..."
+
 show_wait_spinner{
   check_format()
   get_info()
 }
+if @command_type == "txt"
+  do_txt
+end
 puts "Done!"
-puts "IP:\"#{@ip}\" City:\"#{@city}\""
+
+if @command_type == "IP"
+  puts "IP:\"#{@ip}\" City:\"#{@city}\""
+end
 # http://stackoverflow.com/questions/10262235/printing-an-ascii-spinning-cursor-in-the-console
 
 run()
